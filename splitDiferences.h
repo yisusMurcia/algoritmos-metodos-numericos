@@ -2,6 +2,7 @@
 #define SPLIT_DIFFERENCES_H
 
 #include <string>
+#include <cmath>
 
 using namespace std;
 
@@ -71,14 +72,21 @@ class SplitDifferences {
 
     string calculateUniformedSpacedInterpolation(double h){
         string result = to_string(functionData[0]);
-        int splitDifferencesSize = size;
-        string s = "(x - " + to_string(xData[0]) + ")/" + to_string(h);
+        double value;
         for(int i = 1; i < size; i++){
-            result += " + " + to_string(delta(i)/getFactorial(i));
-            for(int j = 0; j < i; j++){
-                result += "*" + s + " - " + to_string(j);
+            value = delta(i)/(getFactorial(i)* pow(h, i));
+            if(value != 0){
+                result += " + " + to_string(value);
+                for(int j = 0; j < i; j++){
+                    value = j*h + xData[0];
+                    if(value > 0)
+                        result += "*(x - " + to_string(value) + ")";
+                    else if(value == 0)
+                        result+= "*x";
+                    else
+                        result+= "*x + " + to_string(-value);
+                }
             }
-            splitDifferencesSize--;
         }
 
         return result;
