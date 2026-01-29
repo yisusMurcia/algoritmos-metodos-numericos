@@ -60,6 +60,27 @@ int main() {
     cout << "Expected output: Polynomial of degree <= 3 that reproduces y = x^2 through all points" << endl;
     cout << endl;
 
+    // TEST CASE 4: Uniformly spaced points on linear function
+    // Points: (0, 1), (2, 5), (4, 9), (6, 13)
+    // Uniform spacing: h = 2 on y = 2x + 1
+    // Expected output: Uses Newton's forward difference formula for uniformly spaced data
+    // The formula will include factorial terms and powers of h
+    // Format: f[x0] + (delta_f[0])/(1!*h) * (x-x0) + (delta2_f[0])/(2!*h^2) * (x-x0)*(x-x1) + ...
+    cout << "TEST CASE 4: Uniformly Spaced Points (y = 2x + 1, h = 2)" << endl;
+    cout << "Points: (0, 1), (2, 5), (4, 9), (6, 13)" << endl;
+    cout << "Uniform spacing: h = 2" << endl;
+    
+    double x4[] = {0, 2, 4, 6};
+    double y4[] = {1, 5, 9, 13};
+    
+    SplitDifferences sd4(4, x4, y4);
+    string result4 = sd4.calculateInterpolation();
+    
+    cout << "Interpolating polynomial: " << result4 << endl;
+    cout << "Expected output: Uses Newton's forward difference formula with factorial and h terms" << endl;
+    cout << "This method is more efficient for uniformly spaced data points" << endl;
+    cout << endl;
+
     cout << "========================================" << endl;
     cout << "Algorithm explanation:" << endl;
     cout << "Newton's Divided Differences method constructs a polynomial P(x)" << endl;

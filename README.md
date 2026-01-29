@@ -4,4 +4,4 @@ This method build the polynomial function that matches the given points, for use
 
 #[Split differences (Newton)](splitDiferences.h)
 
-This method as the langrange method return a polynomial function that matches the givens points and return a mathematical expresion.
+This method as the langrange method return a polynomial function that matches the givens points and return a mathematical expresion. Also this method is optimized for uniformed spaced cases
