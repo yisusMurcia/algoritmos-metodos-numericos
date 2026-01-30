@@ -1,91 +1,81 @@
 #include <iostream>
-#include "splitDiferences.h"
+#include <cmath>
+#include "Newton.h"
 
 using namespace std;
 
 int main() {
     cout << "========================================" << endl;
-    cout << "  NEWTON'S DIVIDED DIFFERENCES METHOD  " << endl;
+    cout << "     NEWTON'S ROOT FINDING METHODS     " << endl;
     cout << "========================================\n" << endl;
 
-    // TEST CASE 1: Linear function y = 2x + 1
-    // Points: (0, 1), (1, 3), (2, 5)
-    // Expected output: A polynomial representation of the interpolating function
-    // For a linear function, divided differences should give: 1 + 2*(x - 0) + 0*(x - 0)*(x - 1)
-    cout << "TEST CASE 1: Linear Function (y = 2x + 1)" << endl;
-    cout << "Points: (0, 1), (1, 3), (2, 5)" << endl;
+    // TEST CASE 5: Polynomial root finding - quadratic equation x^2 - 2 = 0
+    // Roots: x = ±√2 ≈ ±1.414
+    // Polynomial coefficients: [1, 0, -2] (x^2 + 0x - 2)
+    // Expected output: Should find one of the roots (approximately 1.414 or -1.414)
+    cout << "TEST CASE 5: Polynomial Root Finding (x^2 - 2 = 0)" << endl;
+    cout << "Expected roots: x = ±√2 ≈ ±1.414" << endl;
     
-    double x1[] = {0, 1, 2};
-    double y1[] = {1, 3, 5};
+    double coeffs1[] = {1, 0, -2}; // x^2 + 0x - 2
+    double root1 = polynomialNewton(1.0, 3, coeffs1); // Start with positive guess
     
-    SplitDifferences sd1(3, x1, y1);
-    string result1 = sd1.calculateInterpolation();
-    
-    cout << "Interpolating polynomial: " << result1 << endl;
-    cout << "Expected output: Polynomial of degree <= 2 passing through all three points" << endl;
+    cout << "Root found (starting from x=1.0): " << root1 << endl;
+    cout << "Verification: x^2 = " << root1*root1 << " (should be ≈ 2.0)" << endl;
     cout << endl;
 
-    // TEST CASE 2: Quadratic function y = x^2
-    // Points: (0, 0), (1, 1), (2, 4)
-    // Expected output: A polynomial representation of the quadratic function
-    // The divided differences should reconstruct: 0 + 1*(x - 0) + 1*(x - 0)*(x - 1)
-    cout << "TEST CASE 2: Quadratic Function (y = x^2)" << endl;
-    cout << "Points: (0, 0), (1, 1), (2, 4)" << endl;
+    // TEST CASE 6: Polynomial root finding - cubic equation x^3 - 6x^2 + 11x - 6 = 0
+    // Roots: x = 1, 2, 3
+    // Polynomial coefficients: [1, -6, 11, -6] (x^3 - 6x^2 + 11x - 6)
+    // Expected output: Should find one of the roots (1, 2, or 3)
+    cout << "TEST CASE 6: Polynomial Root Finding (x^3 - 6x^2 + 11x - 6 = 0)" << endl;
+    cout << "Expected roots: x = 1, 2, 3" << endl;
     
-    double x2[] = {0, 1, 2};
-    double y2[] = {0, 1, 4};
+    double coeffs2[] = {1, -6, 11, -6}; // x^3 - 6x^2 + 11x - 6
+    double root2 = polynomialNewton(0.5, 4, coeffs2); // Start with guess near 1
     
-    SplitDifferences sd2(3, x2, y2);
-    string result2 = sd2.calculateInterpolation();
-    
-    cout << "Interpolating polynomial: " << result2 << endl;
-    cout << "Expected output: Polynomial of degree <= 2 representing y = x^2" << endl;
+    cout << "Root found (starting from x=0.5): " << root2 << endl;
+    cout << "Verification: x^3 - 6x^2 + 11x - 6 = " 
+         << root2*root2*root2 - 6*root2*root2 + 11*root2 - 6 << " (should be ≈ 0.0)" << endl;
     cout << endl;
 
-    // TEST CASE 3: Four points with higher degree polynomial
-    // Points: (1, 1), (2, 4), (3, 9), (4, 16)
-    // These points lie on y = x^2
-    // Expected output: A cubic polynomial that passes through all four points
-    // For equidistant points on y = x^2, divided differences will give the quadratic
-    cout << "TEST CASE 3: Four Points on Quadratic (y = x^2)" << endl;
-    cout << "Points: (1, 1), (2, 4), (3, 9), (4, 16)" << endl;
+    // TEST CASE 7: General function root finding - sin(x) = 0
+    // Roots: x = nπ where n is integer
+    // Expected output: Should find root near x=3.0 (π ≈ 3.14159)
+    cout << "TEST CASE 7: General Function Root Finding (sin(x) = 0)" << endl;
+    cout << "Expected roots: x = nπ (π ≈ 3.14159)" << endl;
     
-    double x3[] = {1, 2, 3, 4};
-    double y3[] = {1, 4, 9, 16};
+    double root3 = newton(3.0, [](double x){ return sin(x); });
     
-    SplitDifferences sd3(4, x3, y3);
-    string result3 = sd3.calculateInterpolation();
-    
-    cout << "Interpolating polynomial: " << result3 << endl;
-    cout << "Expected output: Polynomial of degree <= 3 that reproduces y = x^2 through all points" << endl;
+    cout << "Root found (starting from x=3.0): " << root3 << endl;
+    cout << "Verification: sin(x) = " << sin(root3) << " (should be ≈ 0.0)" << endl;
+    cout << "This should be close to π ≈ 3.14159" << endl;
     cout << endl;
 
-    // TEST CASE 4: Uniformly spaced points on linear function
-    // Points: (0, 1), (2, 5), (4, 9), (6, 13)
-    // Uniform spacing: h = 2 on y = 2x + 1
-    // Expected output: Uses Newton's forward difference formula for uniformly spaced data
-    // The formula will include factorial terms and powers of h
-    // Format: f[x0] + (delta_f[0])/(1!*h) * (x-x0) + (delta2_f[0])/(2!*h^2) * (x-x0)*(x-x1) + ...
-    cout << "TEST CASE 4: Uniformly Spaced Points (y = 2x + 1, h = 2)" << endl;
-    cout << "Points: (0, 1), (2, 5), (4, 9), (6, 13)" << endl;
-    cout << "Uniform spacing: h = 2" << endl;
+    // TEST CASE 8: General function root finding - exponential equation e^x - 2 = 0
+    // Root: x = ln(2) ≈ 0.693
+    // Expected output: Should find root near ln(2)
+    cout << "TEST CASE 8: General Function Root Finding (e^x - 2 = 0)" << endl;
+    cout << "Expected root: x = ln(2) ≈ 0.693" << endl;
     
-    double x4[] = {0, 2, 4, 6};
-    double y4[] = {1, 5, 9, 13};
+    double root4 = newton(0.5, [](double x){ return exp(x) - 2; });
     
-    SplitDifferences sd4(4, x4, y4);
-    string result4 = sd4.calculateInterpolation();
-    
-    cout << "Interpolating polynomial: " << result4 << endl;
-    cout << "Expected output: Uses Newton's forward difference formula with factorial and h terms" << endl;
-    cout << "This method is more efficient for uniformly spaced data points" << endl;
+    cout << "Root found (starting from x=0.5): " << root4 << endl;
+    cout << "Verification: e^x - 2 = " << exp(root4) - 2 << " (should be ≈ 0.0)" << endl;
+    cout << "This should be close to ln(2) ≈ 0.693" << endl;
     cout << endl;
 
     cout << "========================================" << endl;
-    cout << "Algorithm explanation:" << endl;
-    cout << "Newton's Divided Differences method constructs a polynomial P(x)" << endl;
-    cout << "that passes through all given data points using the formula:" << endl;
+    cout << "Algorithm explanations:" << endl;
+    cout << endl;
+    cout << "1. NEWTON'S DIVIDED DIFFERENCES METHOD:" << endl;
+    cout << "Constructs a polynomial P(x) that passes through all given data points using:" << endl;
     cout << "P(x) = f[x0] + f[x0,x1]*(x-x0) + f[x0,x1,x2]*(x-x0)*(x-x1) + ..." << endl;
+    cout << endl;
+    cout << "2. NEWTON'S ROOT FINDING METHODS:" << endl;
+    cout << "Iterative methods to find roots of equations f(x) = 0 using the formula:" << endl;
+    cout << "x_{n+1} = x_n - f(x_n)/f'(x_n)" << endl;
+    cout << "- polynomialNewton: For polynomial equations using Horner's method" << endl;
+    cout << "- newton: For general functions using numerical differentiation" << endl;
     cout << "========================================" << endl;
 
     return 0;
