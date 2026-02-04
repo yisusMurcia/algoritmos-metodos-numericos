@@ -1,81 +1,114 @@
 #include <iostream>
-#include <cmath>
-#include "Newton.h"
+#include <complex>
+#include "muller.h"
 
 using namespace std;
 
 int main() {
     cout << "========================================" << endl;
-    cout << "     NEWTON'S ROOT FINDING METHODS     " << endl;
+    cout << "         MULLER'S METHOD TESTS         " << endl;
     cout << "========================================\n" << endl;
 
-    // TEST CASE 5: Polynomial root finding - quadratic equation x^2 - 2 = 0
+    // TEST CASE 1: Quadratic equation x^2 - 2 = 0
     // Roots: x = ±√2 ≈ ±1.414
-    // Polynomial coefficients: [1, 0, -2] (x^2 + 0x - 2)
-    // Expected output: Should find one of the roots (approximately 1.414 or -1.414)
-    cout << "TEST CASE 5: Polynomial Root Finding (x^2 - 2 = 0)" << endl;
+    // Expected output: Should find one of the real roots
+    cout << "TEST CASE 1: Quadratic Equation (x^2 - 2 = 0)" << endl;
     cout << "Expected roots: x = ±√2 ≈ ±1.414" << endl;
-    
-    double coeffs1[] = {1, 0, -2}; // x^2 + 0x - 2
-    double root1 = polynomialNewton(1.0, 3, coeffs1); // Start with positive guess
-    
+
+    double (*func1)(double) = [](double x) { return x*x - 2.0; };
+    double root1 = mullerMethod(1.0, func1);
+
     cout << "Root found (starting from x=1.0): " << root1 << endl;
-    cout << "Verification: x^2 = " << root1*root1 << " (should be ≈ 2.0)" << endl;
+    cout << "Verification: x^2 - 2 = " << func1(root1) << " (should be ≈ 0.0)" << endl;
+    cout << "Should be close to √2 ≈ 1.414" << endl;
     cout << endl;
 
-    // TEST CASE 6: Polynomial root finding - cubic equation x^3 - 6x^2 + 11x - 6 = 0
+    // TEST CASE 2: Cubic equation x^3 - 6x^2 + 11x - 6 = 0
     // Roots: x = 1, 2, 3
-    // Polynomial coefficients: [1, -6, 11, -6] (x^3 - 6x^2 + 11x - 6)
-    // Expected output: Should find one of the roots (1, 2, or 3)
-    cout << "TEST CASE 6: Polynomial Root Finding (x^3 - 6x^2 + 11x - 6 = 0)" << endl;
+    // Expected output: Should find one of the real roots
+    cout << "TEST CASE 2: Cubic Equation (x^3 - 6x^2 + 11x - 6 = 0)" << endl;
     cout << "Expected roots: x = 1, 2, 3" << endl;
-    
-    double coeffs2[] = {1, -6, 11, -6}; // x^3 - 6x^2 + 11x - 6
-    double root2 = polynomialNewton(0.5, 4, coeffs2); // Start with guess near 1
-    
-    cout << "Root found (starting from x=0.5): " << root2 << endl;
-    cout << "Verification: x^3 - 6x^2 + 11x - 6 = " 
-         << root2*root2*root2 - 6*root2*root2 + 11*root2 - 6 << " (should be ≈ 0.0)" << endl;
+
+    double (*func2)(double) = [](double x) {
+        return x*x*x - 6.0*x*x + 11.0*x - 6.0;
+    };
+    double root2 = mullerMethod(0.8, func2);
+
+    cout << "Root found (starting from x=0.8): " << root2 << endl;
+    cout << "Verification: x^3 - 6x^2 + 11x - 6 = " << func2(root2) << " (should be ≈ 0.0)" << endl;
+    cout << "Should be close to 1, 2, or 3" << endl;
     cout << endl;
 
-    // TEST CASE 7: General function root finding - sin(x) = 0
+    // TEST CASE 3: Transcendental equation sin(x) = 0
     // Roots: x = nπ where n is integer
-    // Expected output: Should find root near x=3.0 (π ≈ 3.14159)
-    cout << "TEST CASE 7: General Function Root Finding (sin(x) = 0)" << endl;
+    // Expected output: Should find root near the starting point
+    cout << "TEST CASE 3: Transcendental Equation (sin(x) = 0)" << endl;
     cout << "Expected roots: x = nπ (π ≈ 3.14159)" << endl;
-    
-    double root3 = newton(3.0, [](double x){ return sin(x); });
-    
+
+    double (*func3)(double) = [](double x) { return sin(x); };
+    double root3 = mullerMethod(3.0, func3);
+
     cout << "Root found (starting from x=3.0): " << root3 << endl;
     cout << "Verification: sin(x) = " << sin(root3) << " (should be ≈ 0.0)" << endl;
-    cout << "This should be close to π ≈ 3.14159" << endl;
+    cout << "Should be close to π ≈ 3.14159" << endl;
     cout << endl;
 
-    // TEST CASE 8: General function root finding - exponential equation e^x - 2 = 0
+    // TEST CASE 4: Exponential equation e^x - 2 = 0
     // Root: x = ln(2) ≈ 0.693
-    // Expected output: Should find root near ln(2)
-    cout << "TEST CASE 8: General Function Root Finding (e^x - 2 = 0)" << endl;
+    // Expected output: Should find the natural log root
+    cout << "TEST CASE 4: Exponential Equation (e^x - 2 = 0)" << endl;
     cout << "Expected root: x = ln(2) ≈ 0.693" << endl;
-    
-    double root4 = newton(0.5, [](double x){ return exp(x) - 2; });
-    
+
+    double (*func4)(double) = [](double x) { return exp(x) - 2.0; };
+    double root4 = mullerMethod(0.5, func4);
+
     cout << "Root found (starting from x=0.5): " << root4 << endl;
-    cout << "Verification: e^x - 2 = " << exp(root4) - 2 << " (should be ≈ 0.0)" << endl;
-    cout << "This should be close to ln(2) ≈ 0.693" << endl;
+    cout << "Verification: e^x - 2 = " << exp(root4) - 2.0 << " (should be ≈ 0.0)" << endl;
+    cout << "Should be close to ln(2) ≈ 0.693" << endl;
+    cout << endl;
+
+    // TEST CASE 5: Equation with multiple roots x^4 - 5x^2 + 4 = 0
+    // Roots: x = ±1, ±2 (from factoring: (x^2-1)(x^2-4) = 0)
+    // Expected output: Should find one of the real roots
+    cout << "TEST CASE 5: Quartic Equation (x^4 - 5x^2 + 4 = 0)" << endl;
+    cout << "Expected roots: x = ±1, ±2" << endl;
+
+    double (*func5)(double) = [](double x) {
+        return x*x*x*x - 5.0*x*x + 4.0;
+    };
+    double root5 = mullerMethod(1.5, func5);
+
+    cout << "Root found (starting from x=1.5): " << root5 << endl;
+    cout << "Verification: x^4 - 5x^2 + 4 = " << func5(root5) << " (should be ≈ 0.0)" << endl;
+    cout << "Should be close to ±1 or ±2" << endl;
+    cout << endl;
+
+    // TEST CASE 6: Polynomial with repeated root (x-1)^2 = 0
+    // Root: x = 1 (multiplicity 2)
+    // Expected output: Should find the repeated root
+    cout << "TEST CASE 6: Polynomial with Repeated Root ((x-1)^2 = 0)" << endl;
+    cout << "Expected root: x = 1 (multiplicity 2)" << endl;
+
+    double (*func6)(double) = [](double x) {
+        double diff = x - 1.0;
+        return diff * diff;
+    };
+    double root6 = mullerMethod(0.8, func6);
+
+    cout << "Root found (starting from x=0.8): " << root6 << endl;
+    cout << "Verification: (x-1)^2 = " << func6(root6) << " (should be ≈ 0.0)" << endl;
+    cout << "Should be close to 1.0" << endl;
     cout << endl;
 
     cout << "========================================" << endl;
-    cout << "Algorithm explanations:" << endl;
+    cout << "Algorithm explanation:" << endl;
+    cout << "Muller's method is a root-finding algorithm that uses quadratic" << endl;
+    cout << "interpolation to locate roots of equations f(x) = 0. It works" << endl;
+    cout << "particularly well when derivatives are difficult to compute" << endl;
+    cout << "or don't exist, and can handle various types of functions." << endl;
     cout << endl;
-    cout << "1. NEWTON'S DIVIDED DIFFERENCES METHOD:" << endl;
-    cout << "Constructs a polynomial P(x) that passes through all given data points using:" << endl;
-    cout << "P(x) = f[x0] + f[x0,x1]*(x-x0) + f[x0,x1,x2]*(x-x0)*(x-x1) + ..." << endl;
-    cout << endl;
-    cout << "2. NEWTON'S ROOT FINDING METHODS:" << endl;
-    cout << "Iterative methods to find roots of equations f(x) = 0 using the formula:" << endl;
-    cout << "x_{n+1} = x_n - f(x_n)/f'(x_n)" << endl;
-    cout << "- polynomialNewton: For polynomial equations using Horner's method" << endl;
-    cout << "- newton: For general functions using numerical differentiation" << endl;
+    cout << "The method uses three points to construct a quadratic" << endl;
+    cout << "approximation and finds its root, then iterates this process." << endl;
     cout << "========================================" << endl;
 
     return 0;
