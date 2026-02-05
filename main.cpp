@@ -101,14 +101,85 @@ int main() {
     cout << endl;
 
     cout << "========================================" << endl;
+    cout << "  MULLER'S METHOD - COMPLEX ROOTS      " << endl;
+    cout << "========================================\n" << endl;
+
+    // TEST CASE 7: Quadratic with complex roots x^2 + 4 = 0
+    // Roots: x = ±2i
+    // Expected output: Should find one of the complex roots
+    cout << "TEST CASE 7: Quadratic with Complex Roots (x^2 + 4 = 0)" << endl;
+    cout << "Expected roots: x = ±2i" << endl;
+
+    complex<double> (*func7)(complex<double>) = [](complex<double> x) { 
+        return x*x + complex<double>(4.0);
+    };
+    complex<double> root7 = mullerComplexMethod(complex<double>(0.0, 1.0), func7);
+
+    cout << "Root found (starting from x=0+1i): " << root7 << endl;
+    cout << "Verification: x^2 + 4 = " << func7(root7) << " (should be ≈ 0.0)" << endl;
+    cout << "Should be close to 0 ± 2i" << endl;
+    cout << endl;
+
+    // TEST CASE 8: Cubic with mixed roots x^3 - 1 = 0
+    // Roots: x = 1, (-1 + i√3)/2, (-1 - i√3)/2 (cube roots of unity)
+    // Expected output: Should find one of the roots
+    cout << "TEST CASE 8: Cubic Equation (x^3 - 1 = 0)" << endl;
+    cout << "Expected roots: x = 1 and complex cube roots of unity" << endl;
+
+    complex<double> (*func8)(complex<double>) = [](complex<double> x) {
+        return x*x*x - complex<double>(1.0);
+    };
+    complex<double> root8 = mullerComplexMethod(complex<double>(0.5, 0.5), func8);
+
+    cout << "Root found (starting from x=0.5+0.5i): " << root8 << endl;
+    cout << "Verification: x^3 - 1 = " << func8(root8) << " (should be ≈ 0.0)" << endl;
+    cout << "Expected: one of the cube roots of unity" << endl;
+    cout << endl;
+
+    // TEST CASE 9: Quadratic x^2 - 2x + 2 = 0
+    // Roots: x = 1 ± i
+    // Expected output: Should find one of the complex roots
+    cout << "TEST CASE 9: Quadratic Equation (x^2 - 2x + 2 = 0)" << endl;
+    cout << "Expected roots: x = 1 ± i" << endl;
+
+    complex<double> (*func9)(complex<double>) = [](complex<double> x) {
+        return x*x - complex<double>(2.0)*x + complex<double>(2.0);
+    };
+    complex<double> root9 = mullerComplexMethod(complex<double>(1.0, 1.0), func9);
+
+    cout << "Root found (starting from x=1+1i): " << root9 << endl;
+    cout << "Verification: x^2 - 2x + 2 = " << func9(root9) << " (should be ≈ 0.0)" << endl;
+    cout << "Should be close to 1 ± i" << endl;
+    cout << endl;
+
+    // TEST CASE 10: Polynomial x^4 + 1 = 0
+    // Roots: x = e^(iπ/4), e^(i3π/4), e^(i5π/4), e^(i7π/4)
+    // Expected output: Should find one of the complex roots
+    cout << "TEST CASE 10: Quartic Equation (x^4 + 1 = 0)" << endl;
+    cout << "Expected roots: x = 4th roots of -1 (all complex)" << endl;
+
+    complex<double> (*func10)(complex<double>) = [](complex<double> x) {
+        complex<double> x2 = x*x;
+        return x2*x2 + complex<double>(1.0);
+    };
+    complex<double> root10 = mullerComplexMethod(complex<double>(0.5, 0.5), func10);
+
+    cout << "Root found (starting from x=0.5+0.5i): " << root10 << endl;
+    cout << "Verification: x^4 + 1 = " << func10(root10) << " (should be ≈ 0.0)" << endl;
+    cout << "Should be one of the 4th roots of -1" << endl;
+    cout << endl;
+
+    cout << "========================================" << endl;
     cout << "Algorithm explanation:" << endl;
     cout << "Muller's method is a root-finding algorithm that uses quadratic" << endl;
     cout << "interpolation to locate roots of equations f(x) = 0. It works" << endl;
     cout << "particularly well when derivatives are difficult to compute" << endl;
-    cout << "or don't exist, and can handle various types of functions." << endl;
+    cout << "or don't exist, and can handle both real and complex functions." << endl;
     cout << endl;
     cout << "The method uses three points to construct a quadratic" << endl;
     cout << "approximation and finds its root, then iterates this process." << endl;
+    cout << "The complex version extends this to handle complex numbers," << endl;
+    cout << "making it capable of finding both real and complex roots." << endl;
     cout << "========================================" << endl;
 
     return 0;
